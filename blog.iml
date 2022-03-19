@@ -151,7 +151,6 @@
     <orderEntry type="library" name="old-time-1.1.0.3" level="project" />
     <orderEntry type="library" name="colour-2.3.6" level="project" />
     <orderEntry type="library" name="easy-file-0.2.2" level="project" />
-    <orderEntry type="library" name="wai-app-static-3.1.7.2" level="project" />
-    <orderEntry type="library" name="warp-3.3.19" level="project" />
+    <orderEntry type="library" name="wai-app-static-3.1.7.3" level="project" />
   </component>
 </module>

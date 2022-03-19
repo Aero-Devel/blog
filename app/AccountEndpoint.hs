@@ -1,4 +1,6 @@
-module AccountEndpoint where 
+{-# LANGUAGE TemplateHaskell, LambdaCase, BlockArguments, GADTs
+           , FlexibleContexts, TypeOperators, DataKinds, PolyKinds, ScopedTypeVariables #-}
+module AccountEndpoint where
 import Servant  
 import qualified Data.ByteString as B
 import Data.Proxy 
@@ -15,8 +17,24 @@ type AccountAPI
 
 -- Connect endpoint -> funs 
 
-accountServer :: Member AccountStorage r => ServerT AccountAPI (Sem r)
-accountServer = undefined 
+data Encryptor m a where
+  MakeHash :: B.ByteString -> Encryptor m B.ByteString
+  Validate :: B.ByteString -> B.ByteString -> Encryptor m Bool
+
+makeSem ''Encryptor
+
+accountServer :: ((Member Encryptor) r , (Member AccountStorage) r)
+                 => ServerT AccountAPI (Sem r)
+accountServer =  register
+            :<|> signIn
+            :<|> updateInfo
+            :<|> remove
+
+register :: (Member AccountStorage r, Member Encryptor r) => AccountInput -> Sem r Status -- working ur here
+register = undefined     
+signIn = undefined
+updateInfo = undefined
+remove = undefined
 
 {- -sRegister
        :<|>  llogin
@@ -26,10 +44,12 @@ accountServer = undefined
 -- Define AccountStorage
 
 data AccountStorage m a where 
-  Register     :: ValAcc -> AccountStorage m ()
-  Login        :: ValAcc -> AccountStorage m ()
-  Update       :: ValAcc -> AccountStorage m ()
-  Unregister   :: ValAcc -> AccountStorage m ()
+  InsertAcc       :: ValAcc -> AccountStorage m ()
+  FindAccount     :: ValAcc -> AccountStorage m ()
+  CheckAgainst    :: ValAcc -> AccountStorage m ()
+  UpdateMail      :: ValAcc -> B.ByteString -> AccountStorage m ()
+  UpdatePass      :: ValAcc -> B.ByteString -> AccountStorage m ()
+  DeleteAcc       :: ValAcc -> AccountStorage m ()
 
 makeSem ''AccountStorage
 
@@ -39,11 +59,18 @@ makeSem ''AccountStorage
 
 runAccountStorageIO :: Sem (AccountStorage ': r) a -> Sem r a
 runAccountStorageIO = interpret $ \case
-  Register   valAcc -> undefined -- embed $
-  Login      valAcc -> undefined
-  Update     valAcc -> undefined
-  Unregister valAcc -> undefined
+  InsertAcc    ac    -> undefined
+  FindAccount  ac    -> undefined
+  CheckAgainst ac    -> undefined
+  UpdateMail   ac p  -> undefined
+  UpdatePass   ac p  -> undefined
+  DeleteAcc    ac    -> undefined
 
+
+runEncryptIO :: Sem (Encryptor ': r) a -> Sem r a
+runEncryptIO = interpret $ \case
+  MakeHash unhashed -> undefined
+  Validate try against -> undefined
 
 -- Boilerplate -- 
 
