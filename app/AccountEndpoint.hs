@@ -5,7 +5,7 @@ import Servant
 import qualified Data.ByteString as B
 import Data.Proxy 
 import Polysemy (Sem, Member, makeSem, interpret)
-import AccountData
+import AccountData as A
 
 -- Define api
 
@@ -17,8 +17,16 @@ type AccountAPI
 
 -- Connect endpoint -> funs 
 
+data AccountStorage m a where 
+  InsertAcc       :: ValAcc -> AccountStorage m ()
+  GetPassOf       :: ValAcc -> AccountStorage m (Maybe B.ByteString)
+  UpdateAccount   :: ValAcc -> ValAcc -> AccountStorage m ()
+  DeleteAcc       :: ValAcc -> AccountStorage m ()
+
+makeSem ''AccountStorage
+
 data Encryptor m a where
-  MakeHash :: B.ByteString -> Encryptor m B.ByteString
+  MakeHash :: ValAcc -> Encryptor m ValAcc
   Validate :: B.ByteString -> B.ByteString -> Encryptor m Bool
 
 makeSem ''Encryptor
@@ -30,11 +38,52 @@ accountServer =  register
             :<|> updateInfo
             :<|> remove
 
-register :: (Member AccountStorage r, Member Encryptor r) => AccountInput -> Sem r Status -- working ur here
-register = undefined     
-signIn = undefined
-updateInfo = undefined
-remove = undefined
+register :: (Member AccountStorage r, Member Encryptor r) 
+            => AccountInput -> Sem r Status -- working ur here
+register acc = do 
+    case valAcc acc of
+      (Right vAcc) -> do secAcc <-  makeHash  vAcc 
+                         _      <-  insertAcc secAcc
+                         return Success
+      --------------------------------------------
+      (Left  ers)  ->    return $ (Failure . prettyPrintErs) ers
+ 
+prettyPrintErs :: [VError] -> String
+prettyPrintErs = concatMap show
+
+-- m accIn -> accIn
+--         ->  
+  
+signIn :: (Member AccountStorage r, Member Encryptor r) => AccountInput -> Sem r Status 
+signIn input 
+  = case valAcc input of
+      isLeft -> Return wrongPassAcc
+      (Right val) -> 
+            case val >>= getPassOf of
+                 Nothing  -> return wrongPassAcc
+                 (Just r) -> if validate r $ validPass val 
+                   then return Success
+                   else return wrongPassAcc
+ 
+wrongPassAcc = Failure "Wrong account password combo"
+       
+
+
+updateInfo:: (Member AccountStorage r, Member Encryptor r) => AccountInput -> Sem r Status 
+updateInfo input
+  = undefined
+
+remove :: (Member AccountStorage r, Member Encryptor r) => AccountInput -> Sem r Status 
+remove input
+  = case valAcc input of
+      isLeft -> Return wrongPassAcc
+      (Right val) ->
+            case val >>= getPassOf of
+                 Nothing  -> return wrongPassAcc
+                 (Just r) ->
+                   if validate r $ validPass val
+                     then val >>= deleteAcc >>= return Success
+                     else return Failure "No such account"
 
 {- -sRegister
        :<|>  llogin
@@ -43,41 +92,28 @@ remove = undefined
 
 -- Define AccountStorage
 
-data AccountStorage m a where 
-  InsertAcc       :: ValAcc -> AccountStorage m ()
-  FindAccount     :: ValAcc -> AccountStorage m ()
-  CheckAgainst    :: ValAcc -> AccountStorage m ()
-  UpdateMail      :: ValAcc -> B.ByteString -> AccountStorage m ()
-  UpdatePass      :: ValAcc -> B.ByteString -> AccountStorage m ()
-  DeleteAcc       :: ValAcc -> AccountStorage m ()
-
-makeSem ''AccountStorage
-
 -- Interp AccountStorage
 
 -- embed :: Member (Embed m) r => m a -> Sem r a
 
 runAccountStorageIO :: Sem (AccountStorage ': r) a -> Sem r a
 runAccountStorageIO = interpret $ \case
-  InsertAcc    ac    -> undefined
-  FindAccount  ac    -> undefined
-  CheckAgainst ac    -> undefined
-  UpdateMail   ac p  -> undefined
-  UpdatePass   ac p  -> undefined
-  DeleteAcc    ac    -> undefined
-
+  InsertAcc      ac      -> embed $ executeCreateAccount ac db
+  GetPassOf      ac      -> undefined
+  UpdateAccount  ac ac2  -> undefined
+  DeleteAcc      ac      -> undefined
 
 runEncryptIO :: Sem (Encryptor ': r) a -> Sem r a
 runEncryptIO = interpret $ \case
   MakeHash unhashed -> undefined
   Validate try against -> undefined
 
--- Boilerplate -- 
+-- Boilerplate --
 
 accountApi :: Proxy AccountAPI
 accountApi = Proxy
 
-
-
-
-
+{-
+  https://github.com/NixOS/nix/issues/4356
+  sudo chown -R ihsan:staff /nix
+-}
