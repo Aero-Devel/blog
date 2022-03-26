@@ -48,6 +48,8 @@ instance Monoid Status where
 instance ToJSON Status
 instance FromJSON Status
 
+data Refi
+
 data VError = InvalidEmail | InvalidPassword deriving Show
 
 getAccountSQL :: Query

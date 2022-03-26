@@ -1,0 +1,92 @@
+module Pages.Register exposing (Model, Msg, page)
+
+import Page.element exposing (..)
+import Request exposing (Request)
+import Shared
+import View exposing (View)
+
+
+
+-- This should probably work differently
+-- When logged in
+-- Model
+
+
+type Problem
+    = InvalidEntry String
+    | ServerError String
+
+
+type alias Model =
+    { problems : List Problem
+    , form : Form
+    }
+
+
+type alias Form =
+    { email : String
+    , password : String
+    }
+
+
+
+-- INIT
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( { problems = []
+      , form =
+            { email = ""
+            , password = ""
+            }
+      }
+    , Cmd.none
+    )
+
+
+page : Shared.Model -> Request -> Page
+page shared req =
+    Page.element
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
+
+
+
+-- UPDATE
+
+
+type Msg
+    = EnteredEmail
+    | EnteredPassword
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        EnteredEmail ->
+            ( model, Cmd.none )
+
+        EnteredPassword ->
+            ( model, Cmd.none )
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+
+-- VIEW
+
+
+view : Model -> View Msg
+view model =
+    View.placeholder "Register"

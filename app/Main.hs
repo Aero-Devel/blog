@@ -20,7 +20,7 @@ createApp
              accountApi 
              liftServer 
 
-liftServer :: ServerT AccountAPI Handler 
+liftServer :: ServerT AccountAPI Handler
 liftServer = hoistServer accountApi (\sem -> sem 
                                     & runAccountStorageIO 
                                     & runEncryptIO

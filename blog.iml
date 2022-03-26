@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/.stack-work" />
+      <excludePattern pattern="elm-stuff" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -14,8 +15,6 @@
     <orderEntry type="library" name="bytestring-0.10.12.0" level="project" />
     <orderEntry type="library" name="network-3.1.1.1" level="project" />
     <orderEntry type="library" name="polysemy-1.5.0.0" level="project" />
-    <orderEntry type="library" name="polysemy-plugin-0.3.0.0" level="project" />
-    <orderEntry type="library" name="postgresql-simple-0.6.4" level="project" />
     <orderEntry type="library" name="scrypt-0.5.0" level="project" />
     <orderEntry type="library" name="servant-0.18.3" level="project" />
     <orderEntry type="library" name="servant-server-0.18.3" level="project" />
@@ -38,15 +37,10 @@
     <orderEntry type="library" name="type-errors-0.2.0.0" level="project" />
     <orderEntry type="library" name="type-errors-pretty-0.0.1.2" level="project" />
     <orderEntry type="library" name="unagi-chan-0.4.1.4" level="project" />
-    <orderEntry type="library" name="ghc-8.10.7" level="project" />
-    <orderEntry type="library" name="ghc-tcplugins-extra-0.4.2" level="project" />
-    <orderEntry type="library" name="Only-0.1" level="project" />
     <orderEntry type="library" name="aeson-1.5.6.0" level="project" />
     <orderEntry type="library" name="attoparsec-0.13.2.5" level="project" />
-    <orderEntry type="library" name="bytestring-builder-0.10.8.2.0" level="project" />
     <orderEntry type="library" name="case-insensitive-1.2.1.0" level="project" />
     <orderEntry type="library" name="hashable-1.3.0.0" level="project" />
-    <orderEntry type="library" name="postgresql-libpq-0.9.4.3" level="project" />
     <orderEntry type="library" name="scientific-0.3.7.0" level="project" />
     <orderEntry type="library" name="time-compat-1.9.5" level="project" />
     <orderEntry type="library" name="uuid-types-1.0.5" level="project" />
@@ -93,12 +87,7 @@
     <orderEntry type="library" name="atomic-primops-0.8.4" level="project" />
     <orderEntry type="library" name="primitive-0.7.3.0" level="project" />
     <orderEntry type="library" name="directory-1.3.6.0" level="project" />
-    <orderEntry type="library" name="ghc-boot-8.10.7" level="project" />
-    <orderEntry type="library" name="ghc-heap-8.10.7" level="project" />
-    <orderEntry type="library" name="ghci-8.10.7" level="project" />
-    <orderEntry type="library" name="hpc-0.6.1.0" level="project" />
     <orderEntry type="library" name="process-1.6.13.2" level="project" />
-    <orderEntry type="library" name="terminfo-0.4.1.4" level="project" />
     <orderEntry type="library" name="time-1.9.3" level="project" />
     <orderEntry type="library" name="base-compat-batteries-0.11.2" level="project" />
     <orderEntry type="library" name="data-fix-0.3.2" level="project" />
@@ -152,5 +141,17 @@
     <orderEntry type="library" name="colour-2.3.6" level="project" />
     <orderEntry type="library" name="easy-file-0.2.2" level="project" />
     <orderEntry type="library" name="wai-app-static-3.1.7.3" level="project" />
+    <orderEntry type="library" name="polysemy-plugin-0.3.0.0" level="project" />
+    <orderEntry type="library" name="ghc-8.10.7" level="project" />
+    <orderEntry type="library" name="ghc-tcplugins-extra-0.4.2" level="project" />
+    <orderEntry type="library" name="ghc-boot-8.10.7" level="project" />
+    <orderEntry type="library" name="ghc-heap-8.10.7" level="project" />
+    <orderEntry type="library" name="ghci-8.10.7" level="project" />
+    <orderEntry type="library" name="hpc-0.6.1.0" level="project" />
+    <orderEntry type="library" name="terminfo-0.4.1.4" level="project" />
+    <orderEntry type="library" name="postgresql-simple-0.6.4" level="project" />
+    <orderEntry type="library" name="Only-0.1" level="project" />
+    <orderEntry type="library" name="bytestring-builder-0.10.8.2.0" level="project" />
+    <orderEntry type="library" name="postgresql-libpq-0.9.4.3" level="project" />
   </component>
 </module>
