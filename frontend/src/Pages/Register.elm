@@ -2,7 +2,7 @@ module Pages.Register exposing (Model, Msg, page)
 
 import ElmSpa.Request as Http
 import Gen.Params.Register exposing (Params)
-import Json.Decode as Decode exposing (Decoder)
+import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Encode as Encode
 import Page
 import Request
@@ -178,66 +178,29 @@ trimAll form
   , password = trim form.password
   }
 
-
-
 -- HTTP
-
-register : TrimmedForm -> Http.Request Viewer
-register (Trimmed form) =
-    let
-        user =
-            Encode.object
-                [ ( "email", Encode.string form.email )
-                , ( "password", Encode.string form.password )
-                ]
-        body =
-            Encode.object [ ( "user", user ) ]
-                |> Http.jsonBody
-    in
-    Api.register body Viewer.decoder
-
-{-| Http.request, except it takes an Endpoint instead of a Url.
--}
-request :
-    { body : Http.Body
-    , expect : Http.Expect a
-    , headers : List Http.Header
-    , method : String
-    , timeout : Maybe Float
-    , url : Endpoint
-    , withCredentials : Bool
-    }
-    -> Http.Request a
-request config =
-    Http.request
-        { body = config.body
-        , expect = config.expect
-        , headers = config.headers
-        , method = config.method
-        , timeout = config.timeout
-        , url = unwrap config.url
-        , withCredentials = config.withCredentials
-        }
-
-
-register : Http.Body -> Decoder (Cred -> a) -> Http.Request a
-register body decoder =
-  post Endpoint.users Nothing body (Decode.field "user" (decoderFromCred decoder))
-
-
-type alias Mail = String
+type Email
+    = Email String
 
 type Cred
-    = Cred Mail String
+    = Cred String String
 
-getMail : Cred -> Mail
+getMail : Cred -> String
 getMail (Cred m _) = m
 
-getToken : Cred -> Mail
+getToken : Cred -> String
 getToken (Cred _ s) = s
 
-credentialsDecoder : Decoder Cred
-credentialsDecoder =
-    Decode.succeed Cred
-      |> required "email"  Email.Decoder
-      |> required "token"  Decode.string
+
+
+toString : Email -> String
+toString (Email str) =
+    str
+
+encode : Email -> Value
+encode (Email str) =
+    Encode.string str
+
+decoder : Decoder Email
+decoder =
+    Decode.map Email Decode.string
