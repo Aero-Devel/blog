@@ -1,19 +1,18 @@
 module Main where
 
 import AccountEndpoint
-import Data.Function
 import Database.PostgreSQL.Simple
 import qualified Network.Wai.Handler.Warp as W
-import Servant (Application)
-import Servant.Server (Handler, ServerT, hoistServer, serve)
+import Servant
+import Network.Wai.Handler.Warp (run)
 
--- https://github.com/EncodePanda/todo-rest/blob/master/app/Main.hs
-
-{-
-  Skeptisk men det kan fungera.
--}
 main :: IO ()
-main = run 6060 $ serve accountApi
+main = run 6060 app
+   
+
+app :: Application
+app = serve accountApi accountServer
+
 
 data Config = Config
   { port :: Int,

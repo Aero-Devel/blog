@@ -15,17 +15,18 @@ import qualified Data.ByteString as B
 import GHC.Generics (Generic)
 import Data.Aeson.Types (ToJSON, FromJSON)
 import Database.PostgreSQL.Simple
+import Data.Text
 
 valAcc :: AccountInput -> Either [VError] ValAcc 
 valAcc = undefined
 
 data ValAcc = 
   ValAcc { validMail  :: B.ByteString
-         , validPass :: B.ByteString
+         , validPass ::  B.ByteString
          } deriving (Eq, Generic, ToRow, FromRow, Show)
 
 data AccountInput 
-  = AccountInput { mail     :: String
+  =  AccountInput { mail     :: String
                  , password :: String
                  } deriving (Eq, Generic, ToRow, FromRow)
 
