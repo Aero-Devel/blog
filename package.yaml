@@ -22,9 +22,8 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
   # packages
-- polysemy
-- polysemy-plugin
   # text manipulation
+- mtl
 - text
 - bytestring
 - scrypt
@@ -52,21 +51,14 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -fplugin=Polysemy.Plugin
     dependencies:
     - blog
     default-extensions:
     - TemplateHaskell
     - DataKinds
     - FlexibleContexts
-    - GADTs
-    - LambdaCase
-    - PolyKinds
-    - RankNTypes
     - ScopedTypeVariables
-    - TypeApplications
-    - TypeOperators
-    - TypeFamilies
+
 
 tests:
   blog-test:
