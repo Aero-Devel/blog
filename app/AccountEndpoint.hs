@@ -1,54 +1,64 @@
 {-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE GADTs , DeriveGeneric  #-}
+
 module AccountEndpoint where
 
 import AccountData as A     
-import qualified Data.ByteString as B
 import Data.Proxy
 import Servant
-
-
-
+import GHC.Generics 
+import Data.Aeson (ToJSON, FromJSON)
+import Data.Text (Text)
+import Lib
 
 type AccountAPI 
-       = "account" :> ReqBody '[JSON] AccountInput :> Post   '[JSON] Status -- Create / register
-    :<|> "account" :> ReqBody '[JSON] AccountInput :> Get    '[JSON] Status -- Get    / login
-    :<|> "account" :> ReqBody '[JSON] AccountInput :> Put    '[JSON] Status -- update pass / mail
-    :<|> "account" :> ReqBody '[JSON] AccountInput :> Delete '[JSON] Status -- Delete account
-{-
+       = "account" :> ReqBody '[JSON] RegisterForm :> Post   '[JSON] Status -- Create / register
+    :<|> "account" :> ReqBody '[JSON] LoginForm    :> Get    '[JSON] Status -- Get    / login
+    :<|> "account" :> ReqBody '[JSON] LoginForm    :> Put    '[JSON] Status -- update pass / mail
+    :<|> "account" :> ReqBody '[JSON] LoginForm    :> Delete '[JSON] Status -- Delete account
 
+data LoginForm = LoginForm { mE :: Maybe String , mP :: Maybe String} deriving (Show, Generic)
+instance ToJSON LoginForm 
+instance FromJSON LoginForm
+
+data RegisterForm 
+  = RegisterForm { mail   :: Maybe Text
+                 , pass   :: Maybe Text
+                 , sq     :: Maybe Text 
+                 } 
+                   deriving (Show, Generic)
+                   
+instance ToJSON RegisterForm 
+instance FromJSON RegisterForm
+
+
+{-
 data AccountStorage m a where
   InsertAcc :: ValAcc -> AccountStorage m ()
   GetPassOf :: ValAcc -> AccountStorage m (Maybe B.ByteString)
   UpdateAccount :: ValAcc -> ValAcc -> AccountStorage m ()
   DeleteAcc :: ValAcc -> AccountStorage m ()
-  
 
 data Encryptor m a where
   MakeHash :: ValAcc -> Encryptor m ValAcc
   Validate :: B.ByteString -> B.ByteString -> Encryptor m Bool
 
 -}
-
-
 class (Monad m) => Persist m where
   runQuery :: (InDb a) => a -> m String
-
+--  runQuery =  . toQuery
 class InDb a where
   toQuery :: a -> String
 
-data DbAction = Select | Insert | Delete | Update
-data Selector = AllMatching | All | NoneMatching
-data DbQuery = DbAction ValAcc Selector
 
-
-
-
+accountServer :: ServerT AccountAPI RIO
 accountServer 
     =    register
     :<|> signIn
     :<|> updateInfo
     :<|> remove
 
+register :: RegisterForm -> RIO Status
 register = undefined
 remove = undefined
 signIn = undefined

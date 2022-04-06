@@ -7,7 +7,6 @@ module AccountData (
   VError,
   ValAcc(..),
   valAcc,
-  AccountInput,
   Status(Success,Failure)
 ) where
 
@@ -17,21 +16,15 @@ import Data.Aeson.Types (ToJSON, FromJSON)
 import Database.PostgreSQL.Simple
 import Data.Text
 
-valAcc :: AccountInput -> Either [VError] ValAcc 
-valAcc = undefined
+valAcc :: Text -> Text -> Either [VError] ValAcc 
+valAcc m p = undefined
 
 data ValAcc = 
-  ValAcc { validMail  :: B.ByteString
-         , validPass ::  B.ByteString
+  ValAcc { validMail  ::  Text
+         , validPass  ::  Text
          } deriving (Eq, Generic, ToRow, FromRow, Show)
 
-data AccountInput 
-  =  AccountInput { mail     :: String
-                 , password :: String
-                 } deriving (Eq, Generic, ToRow, FromRow)
 
-instance ToJSON AccountInput
-instance FromJSON AccountInput
 
 data Status 
   = Success  
